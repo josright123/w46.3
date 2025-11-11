@@ -1,0 +1,299 @@
+/**
+ **************************************************************************
+ * @file     dm_eth_task_main.c
+ * @version  v1.0.1
+ * @date     2024-10-08
+ * @brief    DM9051 Ethernet driver main file (or referred to be as eth.c)
+ **************************************************************************
+ *
+ * To restructure and improve the file to enhance readability, maintainability,
+ * and potentially performance.
+ * Last updated: 2024-09-05
+ *
+ */
+#include "cmsis_compiler.h" /* CMSIS compiler specific defines */
+#include "lwip/pbuf.h"
+#include "lwip/netif.h"
+#include "ethernetif_types.h"
+#include "ethernetif.h"
+#include "ethernetif_v51.h"
+#include "netconf.h"
+
+#include "control/conf.h"
+
+//#include "sys/sys_control/conf_rtos.h"
+//#include "sys/sys_control/dm9051_plat_debug.h"
+#include "control/drv_control/conf_core.h"
+#include "control/drv_control/dm9051_drv_debug.h"
+#include "rtos_opts.h"
+
+/* eth api */
+#include "platform_info/nosys/uip_eth/eth_types.h"
+
+//#define	DM_ETH_IRQHandler_W	EXINT9_5_RT_UserFunction
+
+//void EXINT9_5_UserFunction(void);
+
+/* Declare the mutex handle globally so it can be accessed in protect spi sync.
+ */
+#if freeRTOS //"freertos_dm_rt_main.c" (tobe)
+xSemaphoreHandle lock_dm9051_core;
+#endif
+
+//void DM_ETH_IRQHandler_W(void)
+//{
+//	EXINT9_5_UserFunction();
+//}
+
+// Initialize the Ethernet driver
+//const uint8_t *DM_ETH_Init_W(struct netif *netif, const uint8_t *adr)
+//{
+//	const uint8_t *pd;
+
+//	//pd = DM_ETH_Init(adr);
+//	DM_ETH_IRQInit();
+//	dm9051_boards_initialize();
+//	pd = dm9051_init(adr);
+//	if (pd) {
+//		#if LWIP_PTP
+//		/* Enable PTP Timestamping */
+//		//dm9051_ptpstart(EMAC_PTP_FINEUPDATE); /* ETH_PTPStart(ETH_PTP_CoarseUpdate); */
+//		#endif
+
+//		// Set the hardware address for the network interface
+//		// memcpy(netif->hwaddr, pd, sizeof(netif->hwaddr));
+//		netif->hwaddr[0] = pd[0];
+//		netif->hwaddr[1] = pd[1];
+//		netif->hwaddr[2] = pd[2];
+//		netif->hwaddr[3] = pd[3];
+//		netif->hwaddr[4] = pd[4];
+//		netif->hwaddr[5] = pd[5];
+//		return pd;
+//	}
+//	return NULL;
+//}
+
+// Receive data from the Ethernet driver
+struct pbuf *DM_ETH_Input_W(void)
+{
+#if LWIP_PTP
+#if 0
+//.	struct ptptime_t timestamp; //...
+	uint8_t ts_buffer[8];
+#endif
+#endif
+	struct pbuf *p, *q;
+	u16_t len = 0;
+	int l = 0;
+	uint8_t *buffer = get_ReceiveBuffer();
+
+#if LWIP_PTP
+	//len = DM_ETH_PTP_Input(buffer, ts_buffer); //...
+	len = dm9051_rx(buffer);
+	dm_eth_input_hexdump(buffer, len);
+#else
+	//len = DM_ETH_Input(buffer); // Get the length of received data
+	len = dm9051_rx(buffer);
+	dm_eth_input_hexdump(buffer, len);
+#endif
+
+	if (!len)
+		return NULL;
+
+	/* We allocate a pbuf chain of pbufs from the pool. */
+	p = pbuf_alloc(PBUF_RAW, len, PBUF_POOL);
+	if (p != NULL)
+	{
+		for (q = p; q != NULL; q = q->next)
+		{
+			memcpy((u8_t *)q->payload, (u8_t *)&buffer[l], q->len);
+			l = l + q->len;
+		}
+	}
+	return p;
+}
+
+// Transmit data through the Ethernet driver
+void DM_ETH_Output_NW(struct pbuf *p, struct ethernetif *ethernetif)
+{
+#if LWIP_PTP
+	int sync_message_flg = 1; //struct ptptime_t timestamp; //...
+	#if 0
+	uint8_t ts_buffer[8];
+	#endif
+#endif
+	uint8_t *buffer;
+	struct pbuf *q;
+	int l = 0;
+
+	buffer = get_TransmitBuffer();
+
+	for (q = p; q != NULL; q = q->next)
+	{
+		memcpy((u8_t *)&buffer[l], q->payload, q->len);
+		l = l + q->len;
+	}
+
+#if LWIP_PTP
+	if (sync_message_flg && ethernetif->dm_hardware_ptp_ts)
+		dm9051_tx(buffer, (uint16_t)l); //DM_ETH_PTP_HW_TIMESTAMP_Output(buffer, (uint16_t)l, ts_buffer); // Transmit the data - to change to dm9051_ptp_tx()
+	else
+		dm9051_tx(buffer, (uint16_t)l); //DM_ETH_PTP_Output(buffer, (uint16_t)l, ts_buffer);
+#else
+	dm9051_tx(buffer, (uint16_t)l); //DM_ETH_Output(buffer, (uint16_t)l); // Transmit the data
+#endif
+}
+
+void DM_ETH_Output_W(struct pbuf *p)
+{
+#if LWIP_PTP
+#if 0
+//.	struct ptptime_t timestamp; //...
+	uint8_t ts_buffer[8];
+#endif
+#endif
+	uint8_t *buffer;
+	struct pbuf *q;
+	int l = 0;
+
+#if LWIP_PTP
+	//.....
+	buffer = get_TransmitBuffer(); //- to change to get_ptp_TransmitBuffer()
+#else
+	buffer = get_TransmitBuffer();
+#endif
+
+	for (q = p; q != NULL; q = q->next)
+	{
+		memcpy((u8_t *)&buffer[l], q->payload, q->len);
+		l = l + q->len;
+	}
+#if LWIP_PTP
+	dm9051_tx(buffer, (uint16_t)l); //DM_ETH_PTP_Output(buffer, (uint16_t)l, ts_buffer); // Transmit the data - to change to dm9051_ptp_tx()
+#else
+	dm9051_tx(buffer, (uint16_t)l); //DM_ETH_Output(buffer, (uint16_t)l); // Transmit the data
+#endif
+}
+
+// Reset functionality
+void DM_ETH_ToRst_ISR_W(void)
+{
+	dm9051_isr_enab(); //DM_ETH_ToRst_ISR();
+}
+
+// Read register information
+// DM_Eth_GetStatus: cid/bmsr/ncr_nsr
+void DM_Eth_ReadRegsInfo_W(uint8_t *stat)
+{
+	DM_Eth_Read_Info(stat);
+}
+
+int dm_eth_polling_downup_w(void)
+{
+	return dm_eth_polling_downup();
+}
+
+static void dm_eth_poll_event(void) {
+	#if defined(ETHERNET_POLLING_MODE)
+
+		#if 1 /* need include "netconf.h" */
+		#if POLL_ON == POLL_ON_FORCE
+			//nothing //(not return.)
+		#endif
+		#if POLL_ON == POLL_ON_RXPKT
+		//if (!rxb()) return;
+			if (cspi_read_rxb() != 0x01) return; ...NMHJ...
+		#endif
+		#if POLL_ON == POLL_ON_RXPADIFF
+			//if (!DM_ETH_Diff_rx_pointers(...)) return;
+			if (!cspi_diff_rxpa()) return; .....; L, HM...
+		#endif
+		#endif
+
+//.			flgSemaphore_r = 2; 
+			DM_Eth_SemaphoreGiveBinary(); //printf("rxrdy_FIRE\r\n");
+
+	#endif
+}
+
+void DM_Eth_Poll_W(void)
+{
+	dm_eth_poll_event();
+}
+
+void dm_eth_show_app_help_info_w(char *root_dirS, char *prjS, char *locStr, char *dateS)
+{
+	//dm_eth_show_app_help_info(contentStr);
+	printkey("\r\n/%s /%s [%s] %s %s\r\n\r\n", locStr, root_dirS, prjS, locStr, dateS);
+}
+
+void dm_eth_show_app_help_info_ptp(char *op_modeStr, char *statStr, char *clkTypeStr, char *dataStr)
+{
+	//printf
+	printkey("\r\n\r\n\r\n[%s mode][%s][%s] /at32f437_ptp_daemon_client /R2411 [v51][emac] %s\r\n", 
+		op_modeStr, statStr, clkTypeStr, dataStr);
+}
+
+// Debug functionality for calculating RX pointers
+//#if DM_ETH_DEBUG_MODE
+//uint16_t DM_ETH_ToCalc_rx_pointers_W(int state, const uint16_t *mdra_rd_org, uint16_t *mdra_rdp)
+//{
+//	uint16_t diff;
+//	DM9051_MUTEX_OPS((freeRTOS), sys_mutex_lock_start(&lock_dm9051_core));
+//	diff = DM_ETH_ToCalc_rx_pointers(state, mdra_rd_org, mdra_rdp);
+//	DM9051_MUTEX_OPS((freeRTOS), sys_mutex_unlock_end(&lock_dm9051_core));
+//	return diff;
+//}
+//#endif
+
+// Debug functionality for calculating diff of RX pointers
+#if DM_ETH_DEBUG_MODE
+uint16_t DM_ETH_Diff_rx_pointers_W(int state, const uint16_t *mdra_rd_org, uint16_t *mdra_rdp)
+{
+//	static uint16_t smdra_rds;
+	uint16_t diff;
+	diff = DM_ETH_ToCalc_rx_pointers(state, mdra_rd_org, mdra_rdp); // cspi_read_rx_pointers(rwpa_wtp, mdra_rdp);
+//	if (state == 0)
+//	{
+//		smdra_rds = *mdra_rdp;
+//	}
+	return diff;
+}
+#endif
+
+#define SD_100M 0x20
+#define SD_10M 0x10
+#define SD_FULL 0x02
+#define SD_HALF 0x01
+static uint8_t speed_duplex = 0;
+
+// Show Ethernet status
+void DM_Eth_Show_status_W(char *head, uint8_t *statdat, int force)
+{
+	uint8_t speeddupd = 0;
+
+	if (DM_Eth_Info_Linkup(statdat))
+	{
+		if (statdat[0] & 0x08)
+			speeddupd |= SD_FULL;
+		else
+			speeddupd |= SD_HALF;
+		if (statdat[1] & 0x80)
+			speeddupd |= SD_10M;
+		else
+			speeddupd |= SD_100M;
+
+		if ((speeddupd != speed_duplex) || force)
+		{
+			speed_duplex = speeddupd;
+
+			printf("%s Link up as %s %s\r\n",
+				   head,
+				   speeddupd & SD_100M ? "100M" : speeddupd & SD_10M ? "10M"
+																	 : "UN_SPEED",
+				   speeddupd & SD_FULL ? "Full" : speeddupd & SD_HALF ? "Half"
+																	  : "UN_DUPLEX");
+		}
+		printk("\r\n");
+	}
+}

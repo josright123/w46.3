@@ -1,0 +1,13 @@
+#ifndef __DM_PLAT_ETH_H__
+#define __DM_PLAT_ETH_H__
+
+//[lwip]
+//void DM_Eth_LwipInitialize_W(void);
+//int DM_ETHER_Receive_Task_W(void);
+//int dm_eth_polling_downup_w(void);
+
+//[info]
+//void dm_eth_show_app_help_info_w(char *root_dirS, char *prjS, char *locStr, char *dateS);
+//void dm_eth_show_app_help_info_ptp(char *op_modeStr, char *statStr, char *clkTypeStr, char *dataStr);
+
+#endif //__DM_PLAT_ETH_H__

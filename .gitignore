@@ -1,0 +1,54 @@
+# Prerequisites
+*.d
+*.bak
+*.TMP
+desktop.ini
+
+# Object files
+#Objects/
+objects/
+objects
+*.o
+*.ko
+*.obj
+*.crf
+*.dep
+*.sct
+# Added-for
+*.__i
+*.hex
+*.htm
+
+# Linker output
+listings/
+listings
+*.lst
+*.map
+*.exp
+
+#mdk
+*.user1
+*.joseph
+*.uvoptx
+*.uvprojx
+*.user
+*.uvgui
+*.uvgui2
+*.uvopt
+*.uvproj
+*.uvgui3
+*.uvgui4
+*.uvgui5
+*.uvgui6
+*.uvgui7
+*.uvgui8
+*.uvgui9
+*.uvgui10
+*.uvgui11
+*.uvgui12
+*.uvgui13
+*.uvgui14
+*.uvgui15
+*.scvd
+
+

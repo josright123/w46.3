@@ -1,0 +1,11 @@
+main loop or timer interrupt
+  └── periodic_handle(localtime, &netif)
+        ├── [DHCP check and fallback]
+        ├── tcp_tmr()
+        ├── etharp_tmr()
+        ├── dhcp_fine_tmr()
+        ├── dhcp_coarse_tmr()
+        └── ethernetif_set_link(&netif)
+              └── link_update(&netif)
+                    └── link_display(regvalue, &netif)
+                          └── lwip_periodic_display_handle(...)

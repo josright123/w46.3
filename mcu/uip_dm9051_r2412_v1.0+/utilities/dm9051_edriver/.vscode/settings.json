@@ -1,0 +1,6 @@
+{
+    "files.associations": {
+        "conf_rtos.h": "c",
+        "conf.h": "c"
+    }
+}

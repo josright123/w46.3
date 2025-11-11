@@ -1,0 +1,88 @@
+/* support-files-list for dm9051 edriver v1.6.1 */
+
+/* (0) */
+/**
+ *  Files structure in core/ directory
+ *
+ *  dm9051.c         - DM9051 driver
+ *  dm9051.h         - Driver header file
+ *  ver.h            - Version header file
+ *
+ *  @brief  core driver files is the driver implemantation files maintain by Davicom.
+ *          Add dm9051.c to user's project first. After that user will require more 
+ *          for the HAL source files descripted as the following.
+ *  @note   HAL source files could release by Davicom or the user can according theses 
+ *          supported HAL source files to develop as well for his platform micro processor. 
+ */
+ 
+/* (1) */
+/**
+ *  Files structure in hal/ directory
+ *
+ *  hal_at32f437.h   - Support ARTERYTEK AT32F437
+ *  hal_stm32f103.h  - Support STMicroelectronics STM32F103
+ *  hal_stm32f401.h  - Support STMicroelectronics STM32F401
+ *
+ *  @brief  header files for to be included in support the user's dedicated micro processor.
+ */
+
+/* (2) */
+/**
+ *  Directories in hal/ directory
+ *
+ *  SPI1/    - Support SPI1 implementataion programm for such as ARTERYTEK AT32F437, ...
+ *  SPI2/    - Support SPI2 implementataion programm for such as STMicroelectronics STM32F103, STM32F401, ...
+ *  INT/     - Support INT implementataion with gpio pin for each individual micro processor...
+ *
+ *  @brief  for the implement files that operate the SPI bus and interrupt pin.
+ */
+
+/* (2-1) */
+/**
+ *  @Note    To operate as POLLING mode, user need modify the line as below in dm9051.c
+ *  @file    dm9051.c
+ *  @brief   While define INTR_POLL_SEL to be MODE_POLL, the whole project is polling mode, and
+ *           then the dedicated implement files in INT/ is not required to exactly clean user's
+ *           project implementation files.
+ */
+#define INTR_POLL_SEL MODE_POLL
+
+/**
+ * Files polling binded model example 1
+ * Example : ARTERYTEK AT32F437 SPI1
+ * Operation: POLLING mode
+ *
+ *  @brief   micro processor definition file to include.
+ *
+ *  hal/hal_at32f437.h
+ *
+ *  @brief   make only a spi implement file.
+ *
+ *  SPI1/at32f437_spi1.c
+ */
+
+/* (2-2) */
+/**
+ *  @Note    To operate as POLLING mode, user need modify the line as below in dm9051.c
+ *  @file    dm9051.c
+ *  @brief   While define INTR_POLL_SEL to be MODE_INTERRUPT, both spi and interrupt implemantation
+ *           files are required to add to user's project. And each can operate for its designed
+ *           SPI/INT functions.
+ */
+#define INTR_POLL_SEL MODE_INTERRUPT
+
+/**
+ * Files interrupt binded model example 2
+ * Example : ARTERYTEK AT32F437 SPI1
+ * EXINT_lines : EXINT_LINE_7
+ * Operation: INTERRUPT mode
+ *
+ *  @brief   micro processor definition file to include.
+ *
+ *  hal/hal_at32f437.h
+ *
+ *  @brief   make with a spi and a interrupt implement file.
+ *
+ *  SPI1/at32f437_spi1.c
+ *  INT/at32f437_int7.c
+ */
