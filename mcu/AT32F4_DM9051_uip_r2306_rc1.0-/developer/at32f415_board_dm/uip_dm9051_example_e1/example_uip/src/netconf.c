@@ -71,15 +71,15 @@ static dm9051_mac_conf maccfg = {
 	//	.adopt_mode = ADOPTE_EEPROM_MODE,
 	//	.mac_f = dm9051_read_eeprom_mac,
 	//},
-	//.cfg = {
-	//	.adopt_mode = ADOPTE_CONST_MODE,
-	//	.mac_f = NULL,
-	//	.macaddr = { 0x00, 0x60, 0x6e, 0x00, 0x01, 0x25},
-	//},
 	.cfg = {
-		.adopt_mode = ADOPTE_EEPROM_MODE,
-		.mac_f = dm9051_read_eeprom_mac,
+		.adopt_mode = ADOPTE_CONST_MODE,
+		.mac_f = NULL,
+		.macaddr = { 0x00, 0x60, 0x6e, 0x00, 0x01, 0x25},
 	},
+//	.cfg = {
+//		.adopt_mode = ADOPTE_EEPROM_MODE,
+//		.mac_f = dm9051_read_eeprom_mac,
+//	},
 };
 
 //struct netif netif;
@@ -137,28 +137,28 @@ const uip_ipaddr_t MASK_IP = {
   */ 
 /* A function env_ethernetif_set_link_Timer(void const *argument) / call to "dm9051f.c",
  */
-uint16_t env_ethernetif_set_link_Timer(void const *argument)
-{
-  /*static*/ uint16_t regvalue;
-  
-  /* Read PHY_BSR*/
-  regvalue = _dm9051_update_phyread("___periodic_TMR5___");
-  //as:
-  //static uint16_t netif_flags = 0;
-  //if(!netif_flags && (regvalue))
-	//  printf("(netconf)  link 111111\r\n");
-  //else if(netif_flags && (!regvalue))
-	//  printf("(netconf)  link 000000\r\n");
-  //netif_flags = regvalue;
-  return regvalue;
-}
+//uint16_t env_ethernetif_set_link_Timer(void const *argument)
+//{
+//  /*static*/ uint16_t regvalue;
+//  
+//  /* Read PHY_BSR*/
+//  regvalue = _dm9051_update_phyread("___periodic_TMR5___");
+//  //as:
+//  //static uint16_t netif_flags = 0;
+//  //if(!netif_flags && (regvalue))
+//	//  printf("(netconf)  link 111111\r\n");
+//  //else if(netif_flags && (!regvalue))
+//	//  printf("(netconf)  link 000000\r\n");
+//  //netif_flags = regvalue;
+//  return regvalue;
+//}
 #endif
 
 int dm9051_read_eeprom_mac(void)
 {
-	//maccfg.cfg.macaddr.addr[0] = 0;
-	//uip_ethaddr.addr[0] = 0;
-	dm9051_ethaddr_eepromread(maccfg.cfg.macaddr.addr);
+	/* DRIVER EXTRA-SUPPORT REQUIRED 
+	 */
+//	dm9051_ethaddr_eepromread(maccfg.cfg.macaddr.addr);
 	return 0;
 }
 int cpu_read_flash_mac(void)
@@ -180,6 +180,7 @@ void time_update(void)
 
 /* linkDetectFunc
  */
+void dm9051_update_phyread(char *queryStr);
 static void link_handle(uint32_t eachtime)
 {
   static volatile uint32_t link_timer = 0;
@@ -231,13 +232,14 @@ void tapdev_init(void) //or ever 'InitNet_Config'
 		/* already defined in the maccfg.cfg.macaddr.addr[] */
 	}
 	
+	uip_setethaddr(maccfg.cfg.macaddr); //ethaddr
+	ethernetif_init(&uip_ethaddr.addr[0]); //ethaddr.addr
+	
 #if DHCPC_EN
 	/* setup the dhcp renew timer the make the first request */
-	uip_setethaddr(maccfg.cfg.macaddr); //ethaddr
 	timer_set(&dhcp_timer, CLOCK_SECOND * 600);
 	dhcpc_init(&uip_ethaddr, 6);
 #else
-	uip_setethaddr(maccfg.cfg.macaddr); //ethaddr
 	#if 0
 	//uip_ipaddr(ipaddr, 192,168,6,25);=
 	//uip_ipaddr(ipaddr, HOST_IP0, HOST_IP1, HOST_IP2, HOST_IP3);=
@@ -267,8 +269,6 @@ void tapdev_init(void) //or ever 'InitNet_Config'
 	printf("Gateway IP Address: %d.%d.%d.%d \r\n", uip_ipaddr1(ipaddr), uip_ipaddr2(ipaddr), uip_ipaddr3(ipaddr), uip_ipaddr4(ipaddr));
 	printf("---------------------------------------------\r\n");
 #endif //DHCPC_EN
-
-	ethernetif_init((uint8_t *)&maccfg.cfg.macaddr); //ethaddr.addr
 }
 
 void tapdev_loop(void)

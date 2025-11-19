@@ -58,6 +58,7 @@
 #include "developer_conf.h"
 #include "ethernetif.h"
 #include "dm9051_env.h" //"dm9051f_netconf.h" //(contain "lwip_driver_dm9051.h", Also "dm9051f.h")
+#include "core/dm9051.h"
 
 typedef uint32_t u32;
 typedef uint16_t u16;

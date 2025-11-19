@@ -142,6 +142,7 @@ void SysTick_Handler(void)
   */
 #include "at32f415_board.h" //"at32f403a_407_board.h"
 
+#if 1
 extern u32 lwip_sys_now; //jj-temp-extern
 
 //:TMR5_GLOBAL_IRQHandler
@@ -183,6 +184,7 @@ void TMR5_GLOBAL_IRQHandler(void) //Accept TMR5, NOT startup_at32f415.s ; TMR6 (
   }
 #endif
 }
+#endif
 
 #if 1 
 //to-research

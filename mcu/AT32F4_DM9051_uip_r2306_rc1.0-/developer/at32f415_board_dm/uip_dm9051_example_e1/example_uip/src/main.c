@@ -4,6 +4,7 @@
   * @version  v1.0
   * @date     2023-04-28
   * @brief    main program
+  * @mode	  polling mode
   **************************************************************************
   *                       Copyright notice & Disclaimer
   *
@@ -31,6 +32,7 @@
 #include "ethernetif.h"
 #include "dm9051_env.h" //"dm9051f_netconf.h" //"at32_emac.h"
 #include "netconf.h"
+#include "core/dm9051.h"
 
 /** @addtogroup AT32F407_periph_examples
   * @{
@@ -55,10 +57,11 @@ int main(void)
   printf("@example  example_uip\r\n");
   printf("@version  AT32F4_DM9051_uip_r2306_rc1.0\r\n");
   printf("@date     2023-06-15\r\n");
-  env_dm9051f_system_init();
+  env_main_system_init();
   delay_ms(300);
 	
 //  tcpip_stack_init();
+	dm9051_conf(); /*dm9051_boards_initialize();*/ //dm9051_pins_configuration();
 	tapdev_init();
 
 #if WEB_EN

@@ -33,14 +33,16 @@
 
 #include "at32f415.h"
 //#include "netif.h"
+#if 0
 #include "dm9051_lw.h"
-
+#endif
+	 
 /** @addtogroup 415_dm9051_env
   * @{
   */
 
 /*
- * A function env_dm9051f_system_init(void) / "dm9051_env.c",
+ * A function env_main_system_init(void) / "dm9051_env.c",
  *
  * A function env_ethernetif_update_config_cb(struct netif *netif) / "dm9051f.c",
  *
@@ -52,7 +54,7 @@
  *   A function lwip_rx_loop_handler(void) / "netconf.c" (Called by main()'s for-loop / "main.c")
  *
  */
-error_status env_dm9051f_system_init(void);
+error_status env_main_system_init(void);
 //void env_ethernetif_update_config_cb(struct netif *netif);
 
 /**
