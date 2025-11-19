@@ -1,5 +1,31 @@
+/**
+ * \defgroup timer Timer library
+ *
+ * The timer library provides functions for setting, resetting and
+ * restarting timers, and for checking if a timer has expired. An
+ * application must "manually" check if its timers have expired; this
+ * is not done automatically.
+ *
+ * A timer is declared as a \c struct \c timer and all access to the
+ * timer is made by a pointer to the declared timer.
+ *
+ * \note The timer library uses the \ref clock "Clock library" to
+ * measure time. Intervals should be specified in the format used by
+ * the clock library.
+ *
+ * @{
+ */
+
+
+/**
+ * \file
+ * Timer library header file.
+ * \author
+ * Adam Dunkels <adam@sics.se>
+ */
+
 /*
- * Copyright (c) 2006, Swedish Institute of Computer Science.
+ * Copyright (c) 2004, Swedish Institute of Computer Science.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -28,46 +54,33 @@
  *
  * This file is part of the uIP TCP/IP stack
  *
- * $Id: clock-arch.c,v 1.2 2006/06/12 08:00:31 adam Exp $
+ * Author: Adam Dunkels <adam@sics.se>
+ *
+ * $Id: timer.h,v 1.3 2006/06/11 21:46:39 adam Exp $
  */
+#ifndef __TIMER_H__
+#define __TIMER_H__
+
+#include "clock.h"
 
 /**
- * \file
- *         Implementation of architecture-specific clock functionality
- * \author
- *         Adam Dunkels <adam@sics.se>
+ * A timer.
+ *
+ * This structure is used for declaring a timer. The timer must be set
+ * with timer_set() before it can be used.
+ *
+ * \hideinitializer
  */
-#if 0
-//#include "system_mhscpu.h"
-//#include "includes.h"
-#else
-//#include "at32f415.h" //jj.
-#include "at32f435_437.h" //"at32f415.h"
-#endif
+struct timer {
+  clock_time_t start;
+  clock_time_t interval;
+};
 
-#ifndef __DEVELOP_CONF_H__
-  // ..fbmlmdbe...check .........
-#include "developer_conf.h"
-#endif
+void timer_set(struct timer *t, clock_time_t interval);
+void timer_reset(struct timer *t);
+void timer_restart(struct timer *t);
+int timer_expired(struct timer *t);
 
-#include "clock-arch.h"
-//#include <sys/time.h>
+#endif /* __TIMER_H__ */
 
-extern uint32_t lwip_sys_now;
-extern uint32_t g_RunTime; //JJ-Comp
-
-/*---------------------------------------------------------------------------*/
-clock_time_t
-clock_time(void)
-{
-  //struct timeval tv;
-  //struct timezone tz;
-
-  //gettimeofday(&tv, &tz);
-
-  //return tv.tv_sec * 1000 + tv.tv_usec / 1000;
-	
-	return lwip_sys_now;
-  //return g_RunTime;
-}
-/*---------------------------------------------------------------------------*/
+/** @} */

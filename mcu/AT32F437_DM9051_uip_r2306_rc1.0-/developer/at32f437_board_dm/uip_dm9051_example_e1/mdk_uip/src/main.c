@@ -25,8 +25,10 @@
   **************************************************************************
   */
 
-#include "at32f415_board.h" //"at32f403a_407_board.h"
-#include "at32f415_clock.h" //"at32f403a_407_clock.h"
+//#include "at32f415_board.h" //"at32f403a_407_board.h"
+//#include "at32f415_clock.h" //"at32f403a_407_clock.h"
+#include "at32f435_437_board.h"
+#include "at32f435_437_clock.h"
 #include "uip_arp.h"
 #include "developer_conf.h"
 #include "ethernetif.h"

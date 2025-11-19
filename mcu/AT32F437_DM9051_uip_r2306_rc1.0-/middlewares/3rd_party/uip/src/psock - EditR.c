@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2006, Swedish Institute of Computer Science.
+ * Copyright (c) 2004, Swedish Institute of Computer Science.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -28,46 +28,46 @@
  *
  * This file is part of the uIP TCP/IP stack
  *
- * $Id: clock-arch.c,v 1.2 2006/06/12 08:00:31 adam Exp $
+ * Author: Adam Dunkels <adam@sics.se>
+ *
+ * $Id: psock.c,v 1.2 2006/06/12 08:00:30 adam Exp $
  */
 
-/**
- * \file
- *         Implementation of architecture-specific clock functionality
- * \author
- *         Adam Dunkels <adam@sics.se>
+#include <stdio.h>
+#include <string.h>
+
+#include "uipopt.h"
+#include "psock.h"
+#include "uip.h"
+
+#define STATE_NONE 0
+#define STATE_ACKED 1
+#define STATE_READ 2
+#define STATE_BLOCKED_NEWDATA 3
+#define STATE_BLOCKED_CLOSE 4
+#define STATE_BLOCKED_SEND 5
+#define STATE_DATA_SENT 6
+
+/*
+ * Return value of the buffering functions that indicates that a
+ * buffer was not filled by incoming data.
+ *
  */
-#if 0
-//#include "system_mhscpu.h"
-//#include "includes.h"
-#else
-//#include "at32f415.h" //jj.
-#include "at32f435_437.h" //"at32f415.h"
-#endif
+#define BUF_NOT_FULL 0
+#define BUF_NOT_FOUND 0
 
-#ifndef __DEVELOP_CONF_H__
-  // ..fbmlmdbe...check .........
-#include "developer_conf.h"
-#endif
+/*
+ * Return value of the buffering functions that indicates that a
+ * buffer was completely filled by incoming data.
+ *
+ */
+#define BUF_FULL 1
 
-#include "clock-arch.h"
-//#include <sys/time.h>
+/*
+ * Return value of the buffering functions that indicates that an
+ * end-marker byte was found.
+ *
+ */
+#define BUF_FOUND 2
 
-extern uint32_t lwip_sys_now;
-extern uint32_t g_RunTime; //JJ-Comp
-
-/*---------------------------------------------------------------------------*/
-clock_time_t
-clock_time(void)
-{
-  //struct timeval tv;
-  //struct timezone tz;
-
-  //gettimeofday(&tv, &tz);
-
-  //return tv.tv_sec * 1000 + tv.tv_usec / 1000;
-	
-	return lwip_sys_now;
-  //return g_RunTime;
-}
 /*---------------------------------------------------------------------------*/

@@ -1,9 +1,9 @@
 /**
   **************************************************************************
-  * @file     dm9051_env.h
-  * @version  v1.0
-  * @date     2023-04-28
-  * @brief    header file of dm9051 environment config program.
+  * @file     at32f435_437_clock.h
+  * @version  v2.0.0
+  * @date     2020-11-02
+  * @brief    header file of clock program
   **************************************************************************
   *                       Copyright notice & Disclaimer
   *
@@ -24,45 +24,23 @@
   **************************************************************************
   */
 
-#ifndef __DM9051_ENV_H
-#define __DM9051_ENV_H
+/* define to prevent recursive inclusion -------------------------------------*/
+#ifndef __AT32F435_437_CLOCK_H
+#define __AT32F435_437_CLOCK_H
 
 #ifdef __cplusplus
- extern "C" {
+extern "C" {
 #endif
 
-#include "at32f435_437.h" //"at32f415.h"
-//#include "netif.h"
-#if 0
-#include "dm9051_lw.h"
-#endif
-	 
-/** @addtogroup 415_dm9051_env
-  * @{
-  */
+/* includes ------------------------------------------------------------------*/
+#include "at32f435_437.h"
 
-/*
- * A function env_main_system_init(void) / "dm9051_env.c",
- *
- * A function env_ethernetif_update_config_cb(struct netif *netif) / "dm9051f.c",
- *
- *   Called by main() / "main.c"
- *   Called by tcpip_stack_init() / "netconf.c" (Called by main()'s init-part / "main.c")
- *   Called by _lwip_periodic_handle() / "netconf.c" (Called by main()'s for-loop / "main.c")
- *
- * More:
- *   A function lwip_rx_loop_handler(void) / "netconf.c" (Called by main()'s for-loop / "main.c")
- *
- */
-error_status env_main_system_init(void);
-//void env_ethernetif_update_config_cb(struct netif *netif);
-
-/**
-  * @}
-  */
+/* exported functions ------------------------------------------------------- */
+void system_clock_config(void);
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif //__DM9051_ENV_H
+#endif
+

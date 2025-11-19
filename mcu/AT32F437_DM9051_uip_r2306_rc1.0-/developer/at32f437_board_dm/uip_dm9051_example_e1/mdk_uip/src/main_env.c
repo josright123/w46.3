@@ -24,7 +24,8 @@
   **************************************************************************
   */
 
-#include "at32f415_board.h"
+//#include "at32f415_board.h"
+#include "at32f435_437_board.h"
 #include "developer_conf.h"
 //#include "ethernetif.h"
 //#include "dm9051_env.h" //("dm9051f_netconf.h")(contain "dm9051_lw.h")

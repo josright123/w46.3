@@ -7,22 +7,22 @@
 
   <Targets>
     <Target>
-      <TargetName>uip_ethernet_app</TargetName>
+      <TargetName>ptp_daemon</TargetName>
       <ToolsetNumber>0x4</ToolsetNumber>
       <ToolsetName>ARM-ADS</ToolsetName>
-      <pCCUsed>5060528::V5.06 update 5 (build 528)::ARMCC</pCCUsed>
+      <pCCUsed>5060528::V5.06 update 5 (build 528)::.\ARMCC</pCCUsed>
       <uAC6>0</uAC6>
       <TargetOption>
         <TargetCommonOption>
-          <Device>AT32F415RCT7</Device>
+          <Device>-AT32F437ZMT7</Device>
           <Vendor>ArteryTek</Vendor>
-          <PackID>Keil.AT32F4xx_DFP.1.3.2</PackID>
-          <Cpu>IRAM(0x20000000,0x8000) IROM(0x08000000,0x40000) CPUTYPE("Cortex-M4") CLOCK(12000000) ELITTLE</Cpu>
+          <PackID>ArteryTek.AT32F435_437_DFP.2.1.9</PackID>
+          <Cpu>IRAM(0x20000000,0x60000) IROM(0x08000000,0x3F0000) CPUTYPE("Cortex-M4") FPU2 CLOCK(12000000) ELITTLE</Cpu>
           <FlashUtilSpec></FlashUtilSpec>
           <StartupFile></StartupFile>
-          <FlashDriverDll>UL2CM3(-S0 -C0 -P0 -FD20000000 -FC1000 -FN1 -FF0AT32F415_256 -FS08000000 -FL040000 -FP0($$Device:AT32F415RCT7$Flash\AT32F415_256.FLM))</FlashDriverDll>
+          <FlashDriverDll>UL2CM3(-S0 -C0 -P0 -FD20000000 -FC1000 -FN1 -FF0AT32F437_4032 -FS08000000 -FL03F0000 -FP0($$Device:-AT32F437ZMT7$Flash\AT32F437_4032.FLM))</FlashDriverDll>
           <DeviceId>0</DeviceId>
-          <RegisterFile>$$Device:AT32F415RCT7$Device\Include\at32f4xx.h</RegisterFile>
+          <RegisterFile>$$Device:-AT32F437ZMT7$Device\Include\at32f435_437.h</RegisterFile>
           <MemoryEnv></MemoryEnv>
           <Cmp></Cmp>
           <Asm></Asm>
@@ -32,7 +32,7 @@
           <SLE66CMisc></SLE66CMisc>
           <SLE66AMisc></SLE66AMisc>
           <SLE66LinkerMisc></SLE66LinkerMisc>
-          <SFDFile>$$Device:AT32F415RCT7$SVD\AT32F415xx.svd</SFDFile>
+          <SFDFile>$$Device:-AT32F437ZMT7$SVD\AT32F437xx_v2.svd</SFDFile>
           <bCustSvd>0</bCustSvd>
           <UseEnv>0</UseEnv>
           <BinPath></BinPath>
@@ -48,7 +48,7 @@
             <InvalidFlash>1</InvalidFlash>
           </TargetStatus>
           <OutputDirectory>.\objects\</OutputDirectory>
-          <OutputName>uip_app</OutputName>
+          <OutputName>template</OutputName>
           <CreateExecutable>1</CreateExecutable>
           <CreateLib>0</CreateLib>
           <CreateHexFile>0</CreateHexFile>
@@ -109,11 +109,11 @@
         </CommonProperty>
         <DllOption>
           <SimDllName>SARMCM3.DLL</SimDllName>
-          <SimDllArguments> -REMAP</SimDllArguments>
+          <SimDllArguments> -REMAP -MPU</SimDllArguments>
           <SimDlgDll>DCM.DLL</SimDlgDll>
           <SimDlgDllArguments>-pCM4</SimDlgDllArguments>
           <TargetDllName>SARMCM3.DLL</TargetDllName>
-          <TargetDllArguments></TargetDllArguments>
+          <TargetDllArguments> -MPU</TargetDllArguments>
           <TargetDlgDll>TCM.DLL</TargetDlgDll>
           <TargetDlgDllArguments>-pCM4</TargetDlgDllArguments>
         </DllOption>
@@ -132,7 +132,7 @@
             <UseExternalTool>0</UseExternalTool>
             <RunIndependent>0</RunIndependent>
             <UpdateFlashBeforeDebugging>1</UpdateFlashBeforeDebugging>
-            <Capability>0</Capability>
+            <Capability>1</Capability>
             <DriverSelection>4096</DriverSelection>
           </Flash1>
           <bUseTDR>1</bUseTDR>
@@ -182,7 +182,7 @@
             <hadIRAM>1</hadIRAM>
             <hadXRAM>0</hadXRAM>
             <uocXRam>0</uocXRam>
-            <RvdsVP>0</RvdsVP>
+            <RvdsVP>2</RvdsVP>
             <RvdsMve>0</RvdsMve>
             <RvdsCdeCp>0</RvdsCdeCp>
             <nBranchProt>0</nBranchProt>
@@ -246,12 +246,12 @@
               <IRAM>
                 <Type>0</Type>
                 <StartAddress>0x20000000</StartAddress>
-                <Size>0x8000</Size>
+                <Size>0x60000</Size>
               </IRAM>
               <IROM>
                 <Type>1</Type>
                 <StartAddress>0x8000000</StartAddress>
-                <Size>0x40000</Size>
+                <Size>0x3f0000</Size>
               </IROM>
               <XRAM>
                 <Type>0</Type>
@@ -276,7 +276,7 @@
               <OCR_RVCT4>
                 <Type>1</Type>
                 <StartAddress>0x8000000</StartAddress>
-                <Size>0x40000</Size>
+                <Size>0x3f0000</Size>
               </OCR_RVCT4>
               <OCR_RVCT5>
                 <Type>1</Type>
@@ -301,7 +301,7 @@
               <OCR_RVCT9>
                 <Type>0</Type>
                 <StartAddress>0x20000000</StartAddress>
-                <Size>0x8000</Size>
+                <Size>0x60000</Size>
               </OCR_RVCT9>
               <OCR_RVCT10>
                 <Type>0</Type>
@@ -337,9 +337,9 @@
             <v6Rtti>0</v6Rtti>
             <VariousControls>
               <MiscControls></MiscControls>
-              <Define>AT32F415RCT7,USE_STDPERIPH_DRIVER,AT_START_F415_V1</Define>
+              <Define>AT32F437ZMT7,USE_STDPERIPH_DRIVER,AT_START_F437_V1</Define>
               <Undefine></Undefine>
-              <IncludePath>..\..\..\..\..\libraries\drivers\inc;..\..\..\..\..\libraries\cmsis\cm4\core_support;..\..\..\..\..\libraries\cmsis\cm4\device_support;..\inc;..\..\..\..\at32f415_board;..\..\..\..\..\middlewares\3rd_party\uip\port\at32f415_dm9051;..\..\..\lwip_dm9051_driver2306v5;..\..\..\..\..\middlewares\3rd_party\uip\inc;..\..\uip_conf_inc;..\..\uip_app_src;..\..\uip_app_src\Eth_app\dhcpc;..\..\uip_app_src\Eth_app\resolv;..\..\uip_app_src\webserver\inc;..\..\uip_arch_src\UNIX</IncludePath>
+              <IncludePath>..\..\..\libraries\cmsis\cm4\device_support;..\..\..\libraries\cmsis\cm4\device_support;..\inc;..\..\..\..\..\libraries\drivers\inc;..\..\..\..\..\libraries\cmsis\cm4\core_support;..\..\..\..\at32f435_437_board;..\..\..\..\..\middlewares\3rd_party\uip\inc;..\..\uip_app_src\webserver\inc;..\..\uip_app_src\Eth_app\dhcpc;..\..\dm9051_elwip;..\..\uip_arch_src\UNIX;..\..\uip_app_src\Eth_app\resolv;..\..\..\..\..\middlewares\3rd_party\uip\port\at32f415_dm9051;..\..\..\dm9051_u2510_r_9_1;..\..\uip_conf_inc</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -352,7 +352,7 @@
             <NoWarn>0</NoWarn>
             <uSurpInc>0</uSurpInc>
             <useXO>0</useXO>
-            <ClangAsOpt>4</ClangAsOpt>
+            <ClangAsOpt>1</ClangAsOpt>
             <VariousControls>
               <MiscControls></MiscControls>
               <Define></Define>
@@ -389,39 +389,19 @@
               <FilePath>..\src\main.c</FilePath>
             </File>
             <File>
-              <FileName>at32f415_clock.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\src\at32f415_clock.c</FilePath>
-            </File>
-            <File>
-              <FileName>at32f415_int.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\src\at32f415_int.c</FilePath>
-            </File>
-            <File>
               <FileName>netconf.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\src\netconf.c</FilePath>
             </File>
             <File>
-              <FileName>dm9051_env.c</FileName>
+              <FileName>at32f435_437_clock.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\src\dm9051_env.c</FilePath>
+              <FilePath>..\src\at32f435_437_clock.c</FilePath>
             </File>
             <File>
-              <FileName>ethernetif.c</FileName>
+              <FileName>at32f435_437_int.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\..\..\middlewares\3rd_party\uip\port\at32f415_dm9051\ethernetif.c</FilePath>
-            </File>
-            <File>
-              <FileName>clock-arch.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\uip_arch_src\UNIX\clock-arch.c</FilePath>
-            </File>
-            <File>
-              <FileName>dm9051_lw.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\lwip_dm9051_driver2306v5\dm9051_lw.c</FilePath>
+              <FilePath>..\src\at32f435_437_int.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -429,9 +409,9 @@
           <GroupName>bsp</GroupName>
           <Files>
             <File>
-              <FileName>at32f415_board.c</FileName>
+              <FileName>at32f435_437_board.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\..\at32f415_board\at32f415_board.c</FilePath>
+              <FilePath>..\..\..\..\at32f435_437_board\at32f435_437_board.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -439,34 +419,49 @@
           <GroupName>firmware</GroupName>
           <Files>
             <File>
-              <FileName>at32f415_crm.c</FileName>
+              <FileName>at32f435_437_crm.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\..\..\libraries\drivers\src\at32f415_crm.c</FilePath>
+              <FilePath>..\..\..\..\..\libraries\drivers\src\at32f435_437_crm.c</FilePath>
             </File>
             <File>
-              <FileName>at32f415_usart.c</FileName>
+              <FileName>at32f435_437_exint.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\..\..\libraries\drivers\src\at32f415_usart.c</FilePath>
+              <FilePath>..\..\..\..\..\libraries\drivers\src\at32f435_437_exint.c</FilePath>
             </File>
             <File>
-              <FileName>at32f415_gpio.c</FileName>
+              <FileName>at32f435_437_gpio.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\..\..\libraries\drivers\src\at32f415_gpio.c</FilePath>
+              <FilePath>..\..\..\..\..\libraries\drivers\src\at32f435_437_gpio.c</FilePath>
             </File>
             <File>
-              <FileName>at32f415_misc.c</FileName>
+              <FileName>at32f435_437_misc.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\..\..\libraries\drivers\src\at32f415_misc.c</FilePath>
+              <FilePath>..\..\..\..\..\libraries\drivers\src\at32f435_437_misc.c</FilePath>
             </File>
             <File>
-              <FileName>at32f415_spi.c</FileName>
+              <FileName>at32f435_437_tmr.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\..\..\libraries\drivers\src\at32f415_spi.c</FilePath>
+              <FilePath>..\..\..\..\..\libraries\drivers\src\at32f435_437_tmr.c</FilePath>
             </File>
             <File>
-              <FileName>at32f415_tmr.c</FileName>
+              <FileName>at32f435_437_usart.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\..\..\libraries\drivers\src\at32f415_tmr.c</FilePath>
+              <FilePath>..\..\..\..\..\libraries\drivers\src\at32f435_437_usart.c</FilePath>
+            </File>
+            <File>
+              <FileName>at32f435_437_spi.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\libraries\drivers\src\at32f435_437_spi.c</FilePath>
+            </File>
+            <File>
+              <FileName>at32f435_437_scfg.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\libraries\drivers\src\at32f435_437_scfg.c</FilePath>
+            </File>
+            <File>
+              <FileName>at32f435_437_dma.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\libraries\drivers\src\at32f435_437_dma.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -474,14 +469,69 @@
           <GroupName>cmsis</GroupName>
           <Files>
             <File>
-              <FileName>system_at32f415.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\..\..\libraries\cmsis\cm4\device_support\system_at32f415.c</FilePath>
+              <FileName>startup_at32f435_437.s</FileName>
+              <FileType>2</FileType>
+              <FilePath>..\..\..\..\..\libraries\cmsis\cm4\device_support\startup\mdk\startup_at32f435_437.s</FilePath>
             </File>
             <File>
-              <FileName>startup_at32f415.s</FileName>
-              <FileType>2</FileType>
-              <FilePath>..\..\..\..\..\libraries\cmsis\cm4\device_support\startup\mdk\startup_at32f415.s</FilePath>
+              <FileName>system_at32f435_437.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\libraries\cmsis\cm4\device_support\system_at32f435_437.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>uip_arch</GroupName>
+          <Files>
+            <File>
+              <FileName>clock-arch.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\uip_arch_src\UNIX\clock-arch.c</FilePath>
+            </File>
+            <File>
+              <FileName>app_call.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\uip_app_src\app_call.c</FilePath>
+            </File>
+            <File>
+              <FileName>httpd.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\uip_app_src\webserver\src\DM\httpd.c</FilePath>
+            </File>
+            <File>
+              <FileName>httpd-fs.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\uip_app_src\webserver\src\DM\httpd-fs.c</FilePath>
+            </File>
+            <File>
+              <FileName>httpd-cgi-test1.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\uip_app_src\webserver\src\DM\httpd-cgi-test1.c</FilePath>
+            </File>
+            <File>
+              <FileName>http-strings.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\uip_app_src\webserver\src\DM\http-strings.c</FilePath>
+            </File>
+            <File>
+              <FileName>main_unix.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\uip_arch_src\UNIX\main_unix.c</FilePath>
+            </File>
+            <File>
+              <FileName>ethernetif.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\middlewares\3rd_party\uip\port\at32f415_dm9051\ethernetif.c</FilePath>
+            </File>
+            <File>
+              <FileName>platforminfo_uip_v0.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\dm9051_u2510_if\common\platforminfo_uip_v0.c</FilePath>
+            </File>
+            <File>
+              <FileName>uip-conf.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\uip_app_src\uip-conf.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -509,16 +559,6 @@
               <FilePath>..\..\..\..\..\middlewares\3rd_party\uip\src\psock - EditA.c</FilePath>
             </File>
             <File>
-              <FileName>uip-conf.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\uip_app_src\uip-conf.c</FilePath>
-            </File>
-            <File>
-              <FileName>app_call.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\uip_app_src\app_call.c</FilePath>
-            </File>
-            <File>
               <FileName>debug_app.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\uip_app_src\Eth_app\debug_app\debug_app.c</FilePath>
@@ -528,45 +568,34 @@
               <FileType>1</FileType>
               <FilePath>..\..\uip_app_src\Eth_app\resolv\resolv.c</FilePath>
             </File>
-            <File>
-              <FileName>main_unix.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\uip_arch_src\UNIX\main_unix.c</FilePath>
-            </File>
           </Files>
         </Group>
         <Group>
           <GroupName>readme</GroupName>
-          <Files>
-            <File>
-              <FileName>readme.txt</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\readme.txt</FilePath>
-            </File>
-          </Files>
         </Group>
         <Group>
-          <GroupName>ethernet_app</GroupName>
+          <GroupName>dm9051_edriver</GroupName>
+        </Group>
+        <Group>
+          <GroupName>dm9051_edriver_extend</GroupName>
+        </Group>
+        <Group>
+          <GroupName>new</GroupName>
           <Files>
             <File>
-              <FileName>httpd.c</FileName>
+              <FileName>dm9051.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\uip_app_src\webserver\src\DM\httpd.c</FilePath>
+              <FilePath>..\..\..\dm9051_u2510_r_9_1\core\dm9051.c</FilePath>
             </File>
             <File>
-              <FileName>httpd-fs.c</FileName>
+              <FileName>at32f437_spi1.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\uip_app_src\webserver\src\DM\httpd-fs.c</FilePath>
+              <FilePath>..\..\..\dm9051_u2510_r_9_1\hal\SPI1\at32f437_spi1.c</FilePath>
             </File>
             <File>
-              <FileName>httpd-cgi-test1.c</FileName>
+              <FileName>main_env.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\uip_app_src\webserver\src\DM\httpd-cgi-test1.c</FilePath>
-            </File>
-            <File>
-              <FileName>http-strings.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\uip_app_src\webserver\src\DM\http-strings.c</FilePath>
+              <FilePath>..\src\main_env.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -579,5 +608,14 @@
     <components/>
     <files/>
   </RTE>
+
+  <LayerInfo>
+    <Layers>
+      <Layer>
+        <LayName>web_uip</LayName>
+        <LayPrjMark>1</LayPrjMark>
+      </Layer>
+    </Layers>
+  </LayerInfo>
 
 </Project>

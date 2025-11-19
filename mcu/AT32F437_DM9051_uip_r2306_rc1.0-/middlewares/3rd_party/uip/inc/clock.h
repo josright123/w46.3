@@ -1,5 +1,22 @@
+/**
+ * \defgroup clock Clock interface
+ *
+ * The clock interface is the interface between the \ref timer "timer library"
+ * and the platform specific clock functionality. The clock
+ * interface must be implemented for each platform that uses the \ref
+ * timer "timer library".
+ *
+ * The clock interface does only one this: it measures time. The clock
+ * interface provides a macro, CLOCK_SECOND, which corresponds to one
+ * second of system time.
+ *
+ * \sa \ref timer "Timer library"
+ *
+ * @{
+ */
+
 /*
- * Copyright (c) 2006, Swedish Institute of Computer Science.
+ * Copyright (c) 2004, Swedish Institute of Computer Science.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -28,46 +45,44 @@
  *
  * This file is part of the uIP TCP/IP stack
  *
- * $Id: clock-arch.c,v 1.2 2006/06/12 08:00:31 adam Exp $
+ * Author: Adam Dunkels <adam@sics.se>
+ *
+ * $Id: clock.h,v 1.3 2006/06/11 21:46:39 adam Exp $
  */
-
-/**
- * \file
- *         Implementation of architecture-specific clock functionality
- * \author
- *         Adam Dunkels <adam@sics.se>
- */
-#if 0
-//#include "system_mhscpu.h"
-//#include "includes.h"
-#else
-//#include "at32f415.h" //jj.
-#include "at32f435_437.h" //"at32f415.h"
-#endif
-
-#ifndef __DEVELOP_CONF_H__
-  // ..fbmlmdbe...check .........
-#include "developer_conf.h"
-#endif
+#ifndef __CLOCK_H__
+#define __CLOCK_H__
 
 #include "clock-arch.h"
-//#include <sys/time.h>
 
-extern uint32_t lwip_sys_now;
-extern uint32_t g_RunTime; //JJ-Comp
+/**
+ * Initialize the clock library.
+ *
+ * This function initializes the clock library and should be called
+ * from the main() function of the system.
+ *
+ */
+void clock_init(void);
 
-/*---------------------------------------------------------------------------*/
-clock_time_t
-clock_time(void)
-{
-  //struct timeval tv;
-  //struct timezone tz;
+/**
+ * Get the current clock time.
+ *
+ * This function returns the current system clock time.
+ *
+ * \return The current clock time, measured in system ticks.
+ */
+clock_time_t clock_time(void);
 
-  //gettimeofday(&tv, &tz);
+/**
+ * A second, measured in system clock time.
+ *
+ * \hideinitializer
+ */
+#ifdef CLOCK_CONF_SECOND
+#define CLOCK_SECOND CLOCK_CONF_SECOND
+#else
+#define CLOCK_SECOND (clock_time_t)32
+#endif
 
-  //return tv.tv_sec * 1000 + tv.tv_usec / 1000;
-	
-	return lwip_sys_now;
-  //return g_RunTime;
-}
-/*---------------------------------------------------------------------------*/
+#endif /* __CLOCK_H__ */
+
+/** @} */

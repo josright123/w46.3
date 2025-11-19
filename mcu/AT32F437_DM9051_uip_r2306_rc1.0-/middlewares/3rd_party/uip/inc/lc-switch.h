@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2006, Swedish Institute of Computer Science.
+ * Copyright (c) 2004-2005, Swedish Institute of Computer Science.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -28,46 +28,49 @@
  *
  * This file is part of the uIP TCP/IP stack
  *
- * $Id: clock-arch.c,v 1.2 2006/06/12 08:00:31 adam Exp $
+ * Author: Adam Dunkels <adam@sics.se>
+ *
+ * $Id: lc-switch.h,v 1.2 2006/06/12 08:00:30 adam Exp $
+ */
+
+/**
+ * \addtogroup lc
+ * @{
  */
 
 /**
  * \file
- *         Implementation of architecture-specific clock functionality
- * \author
- *         Adam Dunkels <adam@sics.se>
+ * Implementation of local continuations based on switch() statment
+ * \author Adam Dunkels <adam@sics.se>
+ *
+ * This implementation of local continuations uses the C switch()
+ * statement to resume execution of a function somewhere inside the
+ * function's body. The implementation is based on the fact that
+ * switch() statements are able to jump directly into the bodies of
+ * control structures such as if() or while() statmenets.
+ *
+ * This implementation borrows heavily from Simon Tatham's coroutines
+ * implementation in C:
+ * http://www.chiark.greenend.org.uk/~sgtatham/coroutines.html
  */
-#if 0
-//#include "system_mhscpu.h"
-//#include "includes.h"
-#else
-//#include "at32f415.h" //jj.
-#include "at32f435_437.h" //"at32f415.h"
-#endif
 
-#ifndef __DEVELOP_CONF_H__
-  // ..fbmlmdbe...check .........
-#include "developer_conf.h"
-#endif
+#ifndef __LC_SWITCH_H__
+#define __LC_SWTICH_H__
 
-#include "clock-arch.h"
-//#include <sys/time.h>
+/* WARNING! lc implementation using switch() does not work if an
+   LC_SET() is done within another switch() statement! */
 
-extern uint32_t lwip_sys_now;
-extern uint32_t g_RunTime; //JJ-Comp
+/** \hideinitializer */
+typedef unsigned short lc_t;
 
-/*---------------------------------------------------------------------------*/
-clock_time_t
-clock_time(void)
-{
-  //struct timeval tv;
-  //struct timezone tz;
+#define LC_INIT(s) s = 0;
 
-  //gettimeofday(&tv, &tz);
+#define LC_RESUME(s) switch(s) { case 0:
 
-  //return tv.tv_sec * 1000 + tv.tv_usec / 1000;
-	
-	return lwip_sys_now;
-  //return g_RunTime;
-}
-/*---------------------------------------------------------------------------*/
+#define LC_SET(s) s = __LINE__; case __LINE__:
+
+#define LC_END(s) }
+
+#endif /* __LC_SWITCH_H__ */
+
+/** @} */

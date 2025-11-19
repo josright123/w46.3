@@ -28,46 +28,34 @@
  *
  * This file is part of the uIP TCP/IP stack
  *
- * $Id: clock-arch.c,v 1.2 2006/06/12 08:00:31 adam Exp $
+ * $Id: uip-neighbor.h,v 1.2 2006/06/12 08:00:30 adam Exp $
  */
 
 /**
  * \file
- *         Implementation of architecture-specific clock functionality
+ *         Header file for database of link-local neighbors, used by
+ *         IPv6 code and to be used by future ARP code.
  * \author
  *         Adam Dunkels <adam@sics.se>
  */
-#if 0
-//#include "system_mhscpu.h"
-//#include "includes.h"
+
+#ifndef __UIP_NEIGHBOR_H__
+#define __UIP_NEIGHBOR_H__
+
+#include "uip.h"
+
+struct uip_neighbor_addr {
+#if UIP_NEIGHBOR_CONF_ADDRTYPE
+  UIP_NEIGHBOR_CONF_ADDRTYPE addr;
 #else
-//#include "at32f415.h" //jj.
-#include "at32f435_437.h" //"at32f415.h"
+  struct uip_eth_addr addr;
 #endif
+};
 
-#ifndef __DEVELOP_CONF_H__
-  // ..fbmlmdbe...check .........
-#include "developer_conf.h"
-#endif
+void uip_neighbor_init(void);
+void uip_neighbor_add(uip_ipaddr_t ipaddr, struct uip_neighbor_addr *addr);
+void uip_neighbor_update(uip_ipaddr_t ipaddr);
+struct uip_neighbor_addr *uip_neighbor_lookup(uip_ipaddr_t ipaddr);
+void uip_neighbor_periodic(void);
 
-#include "clock-arch.h"
-//#include <sys/time.h>
-
-extern uint32_t lwip_sys_now;
-extern uint32_t g_RunTime; //JJ-Comp
-
-/*---------------------------------------------------------------------------*/
-clock_time_t
-clock_time(void)
-{
-  //struct timeval tv;
-  //struct timezone tz;
-
-  //gettimeofday(&tv, &tz);
-
-  //return tv.tv_sec * 1000 + tv.tv_usec / 1000;
-	
-	return lwip_sys_now;
-  //return g_RunTime;
-}
-/*---------------------------------------------------------------------------*/
+#endif /* __UIP-NEIGHBOR_H__ */
