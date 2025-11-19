@@ -57,7 +57,7 @@ int main(void)
 
   printf("\r\n");
   printf("@example  example_uip\r\n");
-  printf("@version  AT32F4_DM9051_uip_r2306_rc1.0\r\n");
+  printf("@version  AT32%s_DM9051_uip_r2306_rc1.0\r\n", UIP_HEADER_MCU_DESC);
   printf("@date     2023-06-15\r\n");
   env_main_system_init();
   delay_ms(300);

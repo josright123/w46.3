@@ -7,6 +7,8 @@
 //#include "mqtt_client.h"
 //#endif
 
+#define UIP_HEADER_MCU_DESC						"f437"
+
 typedef int8_t    s8_t;
 typedef uint16_t  u16_t;
 typedef int16_t   s16_t;
