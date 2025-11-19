@@ -30,7 +30,7 @@ listings
 *.user1
 *.joseph
 *.uvoptx
-*.uvprojx
+#*.uvprojx
 *.user
 *.uvgui
 *.uvgui2
