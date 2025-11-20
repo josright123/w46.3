@@ -43,6 +43,66 @@
 #include "stdio.h"
 #include "dm9051_env.h" //"dm9051f_netconf.h" //"at32_emac.h"
 #include <string.h>
+#if 1
+#include "../../dm9051_u2510_if/ip_status.h"
+uip_ipaddr_t HOST_IP;
+uip_ipaddr_t GW_IP;
+uip_ipaddr_t MASK_IP;
+//const uip_ipaddr_t HOST_IP = {
+//	//HTONS(((local_ip[0]) << 8) | (local_ip[1])), 
+//	//HTONS(((local_ip[2]) << 8) | (local_ip[3]))
+//	(local_ip[0]) | (local_ip[1] << 8), 
+//	(local_ip[2]) | (local_ip[3] << 8)
+//};
+//const uip_ipaddr_t GW_IP = {
+//	//HTONS(((local_gw[0]) << 8) | (local_gw[1])), 
+//	//HTONS(((local_gw[2]) << 8) | (local_gw[3]))
+//	(local_gw[0]) | (local_gw[1] << 8), 
+//	(local_gw[2]) | (local_gw[3] << 8)
+//};
+//const uip_ipaddr_t MASK_IP = {
+//	//HTONS(((local_mask[0]) << 8) | (local_mask[1])), 
+//	//HTONS(((local_mask[2]) << 8) | (local_mask[3]))
+//	(local_mask[0]) | (local_mask[1] << 8), 
+//	(local_mask[2]) | (local_mask[3] << 8)
+//};
+#else
+//#if (!LWIP_DHCP)
+#define	HOST_IP0	192
+#define	HOST_IP1	168
+#define	HOST_IP2	6 //1
+#define	HOST_IP3	37
+//static const uint8_t cfg_local_ip[ADDR_LENGTH]   = {192, 168, 1, 37}; //{192, 168, 6, 37};
+//static uint8_t cfg_local_gw[ADDR_LENGTH]   = {192, 168, 1, 254}; //{192, 168, 6, 1};
+//static uint8_t cfg_local_mask[ADDR_LENGTH] = {255, 255, 255, 0};
+
+#define	GW_IP0	192
+#define	GW_IP1	168
+#define	GW_IP2	6 //1
+#define	GW_IP3	254
+
+#define	MASK_IP0	255
+#define	MASK_IP1	255
+#define	MASK_IP2	255
+#define	MASK_IP3	0
+//#endif
+const uip_ipaddr_t HOST_IP = {
+	HTONS(((HOST_IP0) << 8) | (HOST_IP1)), 
+	HTONS(((HOST_IP2) << 8) | (HOST_IP3)),
+};
+//const uip_ipaddr_t HOST_IP_LW = {
+//	HTONS(((cfg_local_ip[0]) << 8) | (cfg_local_ip[1])), 
+//	HTONS(((cfg_local_ip[2]) << 8) | (cfg_local_ip[3])),
+//};
+const uip_ipaddr_t GW_IP = {
+	HTONS(((GW_IP0) << 8) | (GW_IP1)), 
+	HTONS(((GW_IP2) << 8) | (GW_IP3)),
+};
+const uip_ipaddr_t MASK_IP = {
+	HTONS(((MASK_IP0) << 8) | (MASK_IP1)), 
+	HTONS(((MASK_IP2) << 8) | (MASK_IP3)),
+};
+#endif
 
 #ifndef DM9051_DIAG
 #define DM9051_DIAG(x) do {printf x;} while(0)
@@ -84,44 +144,6 @@ static dm9051_mac_conf maccfg = {
 //	},
 };
 
-//struct netif netif;
-
-//#if (!LWIP_DHCP)
-#define	HOST_IP0	192
-#define	HOST_IP1	168
-#define	HOST_IP2	1
-#define	HOST_IP3	37
-//static const uint8_t cfg_local_ip[ADDR_LENGTH]   = {192, 168, 1, 37}; //{192, 168, 6, 37};
-//static uint8_t cfg_local_gw[ADDR_LENGTH]   = {192, 168, 1, 254}; //{192, 168, 6, 1};
-//static uint8_t cfg_local_mask[ADDR_LENGTH] = {255, 255, 255, 0};
-
-#define	GW_IP0	192
-#define	GW_IP1	168
-#define	GW_IP2	1
-#define	GW_IP3	254
-
-#define	MASK_IP0	255
-#define	MASK_IP1	255
-#define	MASK_IP2	255
-#define	MASK_IP3	0
-//#endif
-const uip_ipaddr_t HOST_IP = {
-	HTONS(((HOST_IP0) << 8) | (HOST_IP1)), 
-	HTONS(((HOST_IP2) << 8) | (HOST_IP3)),
-};
-//const uip_ipaddr_t HOST_IP_LW = {
-//	HTONS(((cfg_local_ip[0]) << 8) | (cfg_local_ip[1])), 
-//	HTONS(((cfg_local_ip[2]) << 8) | (cfg_local_ip[3])),
-//};
-const uip_ipaddr_t GW_IP = {
-	HTONS(((GW_IP0) << 8) | (GW_IP1)), 
-	HTONS(((GW_IP2) << 8) | (GW_IP3)),
-};
-const uip_ipaddr_t MASK_IP = {
-	HTONS(((MASK_IP0) << 8) | (MASK_IP1)), 
-	HTONS(((MASK_IP2) << 8) | (MASK_IP3)),
-};
-
 /* if "expression" is true, then execute "handler" expression */
 #define NET_TIMER_TASK(expression, handler) do { if ((expression)) { \
   handler;}} while(0)
@@ -129,6 +151,7 @@ const uip_ipaddr_t MASK_IP = {
   handler;}} while(0)
  
 #if 0
+//struct netif netif;
 /**
   * @brief  this function sets the netif link status.
   * @param  netif: the network interface
@@ -225,6 +248,7 @@ void tapdev_init(void) //or ever 'InitNet_Config'
 	SysTick_Config(SystemCoreClock / 1000); 
 	#endif
 	
+	/* xxx */
 	/* Mac address does from the DM9051 driver */
 	if (maccfg.cfg.adopt_mode == ADOPTE_FLASH_MODE) {
 		maccfg.cfg.mac_f();
@@ -236,7 +260,12 @@ void tapdev_init(void) //or ever 'InitNet_Config'
 	
 	uip_setethaddr(maccfg.cfg.macaddr); //ethaddr
 	ethernetif_init(&uip_ethaddr.addr[0]); //ethaddr.addr
-	
+
+	/* yyy */
+	uip_ipaddr_copy(HOST_IP, local_ip);
+	uip_ipaddr_copy(GW_IP, local_gw);
+	uip_ipaddr_copy(MASK_IP, local_mask);
+
 #if DHCPC_EN
 	/* setup the dhcp renew timer the make the first request */
 	timer_set(&dhcp_timer, CLOCK_SECOND * 600);
