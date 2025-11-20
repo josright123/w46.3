@@ -89,7 +89,7 @@ int SER_PUTC(int ch);
 /*--------------------- UDP APP ---------------------------------------*/	
 #if UDP_APP_EN
 	
- #define DHCPC_EN        0
+ #define DHCPC_EN        0 //1 //0
 
  #include "dhcpc.h"
  #include "resolv.h"	

@@ -84,41 +84,38 @@ static dm9051_mac_conf maccfg = {
 
 //struct netif netif;
 
+#include "../../dm9051_u2510_if/ip_status.h"
+uip_ipaddr_t HOST_IP;
+uip_ipaddr_t GW_IP;
+uip_ipaddr_t MASK_IP;
 //#if (!LWIP_DHCP)
-#define	HOST_IP0	192
-#define	HOST_IP1	168
-#define	HOST_IP2	1
-#define	HOST_IP3	37
-//static const uint8_t cfg_local_ip[ADDR_LENGTH]   = {192, 168, 1, 37}; //{192, 168, 6, 37};
-//static uint8_t cfg_local_gw[ADDR_LENGTH]   = {192, 168, 1, 254}; //{192, 168, 6, 1};
-//static uint8_t cfg_local_mask[ADDR_LENGTH] = {255, 255, 255, 0};
+//#define	HOST_IP0	192
+//#define	HOST_IP1	168
+//#define	HOST_IP2	1
+//#define	HOST_IP3	37
 
-#define	GW_IP0	192
-#define	GW_IP1	168
-#define	GW_IP2	1
-#define	GW_IP3	254
+//#define	GW_IP0	192
+//#define	GW_IP1	168
+//#define	GW_IP2	1
+//#define	GW_IP3	254
 
-#define	MASK_IP0	255
-#define	MASK_IP1	255
-#define	MASK_IP2	255
-#define	MASK_IP3	0
+//#define	MASK_IP0	255
+//#define	MASK_IP1	255
+//#define	MASK_IP2	255
+//#define	MASK_IP3	0
 //#endif
-const uip_ipaddr_t HOST_IP = {
-	HTONS(((HOST_IP0) << 8) | (HOST_IP1)), 
-	HTONS(((HOST_IP2) << 8) | (HOST_IP3)),
-};
-//const uip_ipaddr_t HOST_IP_LW = {
-//	HTONS(((cfg_local_ip[0]) << 8) | (cfg_local_ip[1])), 
-//	HTONS(((cfg_local_ip[2]) << 8) | (cfg_local_ip[3])),
+//const uip_ipaddr_t HOST_IP = {
+//	HTONS(((HOST_IP0) << 8) | (HOST_IP1)), 
+//	HTONS(((HOST_IP2) << 8) | (HOST_IP3)),
 //};
-const uip_ipaddr_t GW_IP = {
-	HTONS(((GW_IP0) << 8) | (GW_IP1)), 
-	HTONS(((GW_IP2) << 8) | (GW_IP3)),
-};
-const uip_ipaddr_t MASK_IP = {
-	HTONS(((MASK_IP0) << 8) | (MASK_IP1)), 
-	HTONS(((MASK_IP2) << 8) | (MASK_IP3)),
-};
+//const uip_ipaddr_t GW_IP = {
+//	HTONS(((GW_IP0) << 8) | (GW_IP1)), 
+//	HTONS(((GW_IP2) << 8) | (GW_IP3)),
+//};
+//const uip_ipaddr_t MASK_IP = {
+//	HTONS(((MASK_IP0) << 8) | (MASK_IP1)), 
+//	HTONS(((MASK_IP2) << 8) | (MASK_IP3)),
+//};
 
 /* if "expression" is true, then execute "handler" expression */
 #define NET_TIMER_TASK(expression, handler) do { if ((expression)) { \
@@ -202,14 +199,15 @@ void _periodic_handle(void)
 }
 
 static struct timer periodic_timer, arp_timer;
+#if DHCPC_EN
+static struct timer dhcp_timer;
+#endif
 
 //..struct DM9051_eth DM9051_device;
 
 void tapdev_init(void) //or ever 'InitNet_Config' 
 {
 	//struct uip_eth_addr ethaddr;
-	uip_ipaddr_t ipaddr;
-	
 	timer_set(&periodic_timer, CLOCK_SECOND / 2);	//500ms
   timer_set(&arp_timer, CLOCK_SECOND * 10);	// 10sec
   
@@ -222,7 +220,7 @@ void tapdev_init(void) //or ever 'InitNet_Config'
 	/*Initial and start system tick time = 1ms */
 	SysTick_Config(SystemCoreClock / 1000); 
 	#endif
-	
+
 	/* Mac address does from the DM9051 driver */
 	if (maccfg.cfg.adopt_mode == ADOPTE_FLASH_MODE) {
 		maccfg.cfg.mac_f();
@@ -231,32 +229,26 @@ void tapdev_init(void) //or ever 'InitNet_Config'
 	} else {
 		/* already defined in the maccfg.cfg.macaddr.addr[] */
 	}
-	
+
+	/* xxx */	
 	uip_setethaddr(maccfg.cfg.macaddr); //ethaddr
 	ethernetif_init(&uip_ethaddr.addr[0]); //ethaddr.addr
+
+	/* yyy */
+	uip_ipaddr_copy(HOST_IP, local_ip);
+	uip_ipaddr_copy(GW_IP, local_gw);
+	uip_ipaddr_copy(MASK_IP, local_mask);
 	
 #if DHCPC_EN
 	/* setup the dhcp renew timer the make the first request */
 	timer_set(&dhcp_timer, CLOCK_SECOND * 600);
 	dhcpc_init(&uip_ethaddr, 6);
 #else
-	#if 0
-	//uip_ipaddr(ipaddr, 192,168,6,25);=
-	//uip_ipaddr(ipaddr, HOST_IP0, HOST_IP1, HOST_IP2, HOST_IP3);=
-	//uip_ipaddr_copy(ipaddr, HOST_IP);=
-	  uip_ipaddr(ipaddr, 
-	  uip_ipaddr1(HOST_IP),uip_ipaddr2(HOST_IP),uip_ipaddr3(HOST_IP),uip_ipaddr4(HOST_IP)); //Host IP address
-	  uip_sethostaddr(ipaddr);
-	  uip_ipaddr(ipaddr, GW_IP0, GW_IP1, GW_IP2, GW_IP3);		//Default Gateway
-	  uip_setdraddr(ipaddr);
-	  uip_ipaddr(ipaddr, MASK_IP0, MASK_IP1, MASK_IP2, MASK_IP3);	//Network Mask
-	  uip_setnetmask(ipaddr);
-	#else
-		uip_sethostaddr(HOST_IP); //Host IP address
-		uip_setdraddr(GW_IP);		//Default Gateway
-		uip_setnetmask(MASK_IP);	//Network Mask
-	#endif
+	uip_sethostaddr(HOST_IP); //Host IP address
+	uip_setdraddr(GW_IP);		//Default Gateway
+	uip_setnetmask(MASK_IP);	//Network Mask
 	//show_netwaork_configure();
+	uip_ipaddr_t ipaddr;
 	printf("---------------------------------------------\r\n");
 	printf("Network chip: DAVICOM DM9051 \r\n");
 	printf("MAC Address: %02X:%02X:%02X:%02X:%02X:%02X \r\n", 
@@ -366,9 +358,9 @@ static void cat_checking2(void) \
 
 void uip_timer_protocol(void)  //= 'poll_protocol()'/='eth_poll()'
 {
-#if DHCPC_EN
-	uint16_t status, linkch; 
-#endif //DHCPC_EN
+//#if DHCPC_EN
+//	uint16_t status, linkch; 
+//#endif //DHCPC_EN
 	
 	//DBG_TIMER_PROTO(cat.clock_tome_expirechecking, cat_checking());
   
@@ -419,12 +411,12 @@ void uip_timer_protocol(void)  //= 'poll_protocol()'/='eth_poll()'
 	else if (timer_expired(&dhcp_timer)) 
 	{
 		/* for now turn off the led when we start the dhcp process */
-		status = DM9051_Read_Reg(DM9051_NSR);
-		linkch = DM9051_Read_Reg(DM9051_ISR);
-		
-		if((status == 0x0C) || (linkch == 0xA3)){
-			//dhcpc_renew();
-		}
+//		status = DM9051_Read_Reg(DM9051_NSR);
+//		linkch = DM9051_Read_Reg(DM9051_ISR);
+//		
+//		if((status == 0x0C) || (linkch == 0xA3)){
+//			//dhcpc_renew();
+//		}
 		timer_reset(&dhcp_timer);
     }
 #endif //DHCPC_EN

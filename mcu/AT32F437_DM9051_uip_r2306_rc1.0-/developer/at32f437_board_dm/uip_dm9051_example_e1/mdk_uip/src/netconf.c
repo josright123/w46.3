@@ -248,7 +248,6 @@ void tapdev_init(void) //or ever 'InitNet_Config'
 	SysTick_Config(SystemCoreClock / 1000); 
 	#endif
 	
-	/* xxx */
 	/* Mac address does from the DM9051 driver */
 	if (maccfg.cfg.adopt_mode == ADOPTE_FLASH_MODE) {
 		maccfg.cfg.mac_f();
@@ -257,7 +256,8 @@ void tapdev_init(void) //or ever 'InitNet_Config'
 	} else {
 		/* already defined in the maccfg.cfg.macaddr.addr[] */
 	}
-	
+
+	/* xxx */
 	uip_setethaddr(maccfg.cfg.macaddr); //ethaddr
 	ethernetif_init(&uip_ethaddr.addr[0]); //ethaddr.addr
 
@@ -272,9 +272,6 @@ void tapdev_init(void) //or ever 'InitNet_Config'
 	dhcpc_init(&uip_ethaddr, 6);
 #else
 	#if 0
-	//uip_ipaddr(ipaddr, 192,168,6,25);=
-	//uip_ipaddr(ipaddr, HOST_IP0, HOST_IP1, HOST_IP2, HOST_IP3);=
-	//uip_ipaddr_copy(ipaddr, HOST_IP);=
 	  uip_ipaddr(ipaddr, 
 	  uip_ipaddr1(HOST_IP),uip_ipaddr2(HOST_IP),uip_ipaddr3(HOST_IP),uip_ipaddr4(HOST_IP)); //Host IP address
 	  uip_sethostaddr(ipaddr);

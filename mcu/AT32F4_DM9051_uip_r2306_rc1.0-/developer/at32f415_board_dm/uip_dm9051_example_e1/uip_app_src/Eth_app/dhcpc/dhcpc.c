@@ -38,6 +38,7 @@
 #include "dhcpc.h"
 #include "timer.h"
 #include "pt.h"
+#include "developer_conf.h"
 
 #define STATE_INITIAL         0
 #define STATE_SENDING         1

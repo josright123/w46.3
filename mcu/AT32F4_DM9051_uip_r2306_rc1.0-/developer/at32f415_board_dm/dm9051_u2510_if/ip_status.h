@@ -66,9 +66,9 @@ static const uint8_t local_mask_static_d6[ADDR_LENGTH] = {255, 255, 255, 0};
 //#define local_gw			local_gw_static_d6 //&local_ip_static_d6[0].local_gwaddr[0]
 //#define local_mask			local_mask_static_d6 //&local_ip_static_d6[0].local_maskaddr[0]
 
-#define local_ip			local_ip_static_d6 //&local_ip_static_d6[0].local_ipaddr[0]
-#define local_gw			local_gw_static_d6 //&local_ip_static_d6[0].local_gwaddr[0]
-#define local_mask			local_mask_static_d6 //&local_ip_static_d6[0].local_maskaddr[0]
+#define local_ip			local_ip_static_d1 //&local_ip_static_d6[0].local_ipaddr[0]
+#define local_gw			local_gw_static_d1 //&local_ip_static_d6[0].local_gwaddr[0]
+#define local_mask			local_mask_static_d1 //&local_ip_static_d6[0].local_maskaddr[0]
 
 /* IP candidate Configuration */
 //static const struct ip_node_t ip_candidate[] = {
