@@ -1,0 +1,39 @@
+/*
+ * Copyright (c) 2025
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+&gpio0 {
+	status = "okay";
+};
+
+&sram0 {
+	reg = <0x200000 0x100000>; /* Expand to 1MB to accommodate AArch64 network stacks */
+};
+
+/ {
+	spi_bitbang: spi-bitbang {
+		compatible = "zephyr,spi-bitbang";
+		status = "okay";
+		#address-cells = <1>;
+		#size-cells = <0>;
+		/* RPi4 GPIOs: SCLK=11, MOSI=10, MISO=9, CS=8 */
+		clk-gpios = <&gpio0 11 GPIO_ACTIVE_HIGH>;
+		mosi-gpios = <&gpio0 10 GPIO_ACTIVE_HIGH>;
+		miso-gpios = <&gpio0 9 GPIO_ACTIVE_HIGH>;
+		/*cs-gpios = <&gpio0 8 GPIO_ACTIVE_LOW>;*/
+		cs-gpios = <&gpio0 7 GPIO_ACTIVE_LOW>;
+
+		/* Adjust interrupt pin as needed. Example: GPIO 26 */
+		dm9051@0 {
+			compatible = "davicom,dm9051";
+			reg = <0>;
+			spi-max-frequency = <8000000>;
+			
+			/*int-gpios = <&gpio0 25 GPIO_ACTIVE_LOW>;*/
+			/*int-gpios = <&gpio0 26 GPIO_ACTIVE_LOW>;*/
+			local-mac-address = [00 00 00 00 00 00];
+		};
+	};
+};

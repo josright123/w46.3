@@ -1,0 +1,4 @@
+- real_work in this directory: e.g. w46.3/
+- pass to deliver in the directory: Davicom_DM9051_Drivers_2601/
+  Note: Davicom_DM9051_Drivers_2601/mcu/ only contain [dm9051_u2510_if/, dm9051_u2510_r_12_1/] 
+   which is driver source code files only, in order to be the sync-master for every projects in e.g. w46.3/mcu/
